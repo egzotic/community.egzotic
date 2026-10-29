@@ -1,0 +1,1620 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101216">
+<title>EXOTIC COMMUNITY | Balisong</title>
+
+<style>
+:root {
+  --bg: #05030b;
+  --panel: rgba(13, 9, 24, .84);
+  --border: rgba(208, 90, 164, .18);
+  --text: #eef0f7;
+  --muted: #a4aabc;
+  --blue: #e78ac5;
+  --purple: #bd5ca6;
+  --pink: #ff4fbd;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 85px;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button, .btn {
+  cursor: pointer;
+}
+
+::selection {
+  background: #192e61;
+  color: white;
+}
+
+/* NOWE, ŁAGODNIEJSZE TŁO */
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(13, 4, 26, 0.35) 0%, transparent 70%),
+    linear-gradient(145deg, #05030b 0%, #080411 52%, #020105 100%);
+}
+
+#fx-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .9;
+}
+
+.hero .eyebrow, .hero h1, .hero p, .hero-buttons {
+  animation: heroEnter .85s cubic-bezier(.2,.75,.25,1) both;
+}
+
+.hero h1 { animation-delay: .12s; }
+.hero p { animation-delay: .24s; }
+.hero-buttons { animation-delay: .36s; }
+
+@keyframes heroEnter {
+  from { opacity: 0; transform: translateY(24px) scale(.985); filter: blur(7px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.card, .stat, .glossary-item {
+  transform-style: preserve-3d;
+}
+
+.card:hover {
+  transform: translateY(-7px) perspective(900px) rotateX(1deg);
+}
+
+.reveal-ready .card, .reveal-ready .stat, .reveal-ready .glossary-item,
+.reveal-ready .tutorial-group-title {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .65s ease, transform .65s cubic-bezier(.2,.75,.25,1);
+}
+
+.reveal-ready .is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.smoke {
+  position: absolute;
+  width: 62vw;
+  height: 62vw;
+  min-width: 520px;
+  min-height: 520px;
+  max-width: 1000px;
+  max-height: 1000px;
+  border-radius: 50%;
+  filter: blur(75px);
+  opacity: .62;
+  will-change: transform;
+  background: radial-gradient(ellipse, rgba(137, 55, 255, .72) 0%, rgba(86, 27, 173, .48) 34%, rgba(44, 14, 82, .16) 58%, transparent 72%);
+  animation: smokeMove 12s cubic-bezier(.45, 0, .55, 1) infinite alternate, smokePulse 7s ease-in-out infinite;
+}
+
+.smoke.one {
+  top: -34%;
+  left: -24%;
+}
+
+.smoke.two {
+  bottom: -32%;
+  right: -18%;
+  background: radial-gradient(ellipse, rgba(255, 55, 190, .42) 0%, rgba(107, 28, 203, .62) 32%, rgba(45, 12, 86, .2) 58%, transparent 72%);
+  opacity: .58;
+  animation-delay: -4s;
+  animation-duration: 16s;
+}
+
+.smoke.three {
+  width: 54vw;
+  height: 54vw;
+  min-width: 460px;
+  min-height: 460px;
+  top: 18%;
+  left: 24%;
+  background: radial-gradient(ellipse, rgba(99, 44, 255, .55) 0%, rgba(53, 20, 125, .38) 38%, transparent 72%);
+  opacity: .48;
+  animation-delay: -7s;
+  animation-duration: 14s;
+}
+
+@keyframes smokePulse {
+  0%, 100% { opacity: .42; }
+  50% { opacity: .72; }
+}
+
+@keyframes smokeMove {
+  0% {
+    transform: translate3d(-16%, -12%, 0) scale(.78) rotate(-10deg);
+  }
+  50% {
+    transform: translate3d(12%, 14%, 0) scale(1.16) rotate(12deg);
+  }
+  100% {
+    transform: translate3d(-8%, 22%, 0) scale(.9) rotate(-16deg);
+  }
+}
+
+/* NAWIGACJA */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(7, 7, 11, .82);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav {
+  max-width: 1150px;
+  margin: auto;
+  padding: 15px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.logo span {
+  color: var(--blue);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  font-size: .88rem;
+  color: #c4c9d7;
+  transition: color .2s, transform .2s;
+}
+
+.nav-links a:hover {
+  color: #ffb5e2;
+  transform: translateY(-2px);
+  text-shadow: 0 0 8px rgba(255, 79, 189, .8), 0 0 20px rgba(255, 79, 189, .45);
+}
+
+/* UKŁAD */
+
+main {
+  width: min(1100px, calc(100% - 36px));
+  margin: auto;
+}
+
+section {
+  padding: 76px 0;
+}
+
+.hero {
+  min-height: 76vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 70px;
+}
+
+.eyebrow {
+  color: #aabbe0;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: .75rem;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.hero h1 {
+  font-size: clamp(2.7rem, 8vw, 6.5rem);
+  line-height: .98;
+  letter-spacing: -3px;
+  font-weight: 950;
+  text-shadow: 0 0 45px rgba(255, 79, 189, .12);
+}
+
+.hero h1 span {
+  background: linear-gradient(110deg, #f7e7f1, #ed8bc9, #b66de0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  max-width: 620px;
+  margin: 24px auto;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-weight: 750;
+  font-size: .92rem;
+  transition: transform .22s, box-shadow .22s, background .22s;
+}
+
+.btn.primary {
+  color: #180b16;
+  background: linear-gradient(120deg, #ffc4e8, #e878bd);
+  border-color: transparent;
+}
+
+.btn.secondary {
+  background: rgba(255, 255, 255, .035);
+  color: var(--text);
+}
+
+.btn:hover {
+  transform: translateY(-4px) scale(1.025);
+  border-color: rgba(255, 110, 203, .8);
+  box-shadow: 0 0 12px rgba(255, 79, 189, .38), 0 0 30px rgba(255, 79, 189, .2);
+  text-shadow: 0 0 10px rgba(255, 166, 221, .55);
+}
+
+.btn:active {
+  transform: scale(.97);
+}
+
+/* SEKCJE I KARTY */
+
+.section-head {
+  margin-bottom: 26px;
+}
+
+.section-head .eyebrow {
+  margin-bottom: 8px;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.section-desc {
+  color: var(--muted);
+  margin-top: 10px;
+  max-width: 680px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  padding: 23px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+  min-width: 0;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 105, 199, .48);
+  box-shadow: 0 0 18px rgba(255, 79, 189, .13), 0 12px 38px rgba(0, 0, 0, .3);
+}
+
+.card h3 {
+  font-size: 1.08rem;
+  margin-bottom: 8px;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: .92rem;
+}
+
+.card-icon {
+  font-size: 1.65rem;
+  margin-bottom: 12px;
+}
+
+.social-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.social-card .btn {
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* STATYSTYKI */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.stat {
+  text-align: center;
+  padding: 18px 10px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, .025);
+}
+
+.stat strong {
+  display: block;
+  font-size: 1.8rem;
+  color: #d4def3;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: .8rem;
+}
+
+/* TRACKER */
+
+.tracker-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.field {
+  min-width: 0;
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: rgba(0, 0, 0, .22);
+  outline: none;
+}
+
+.field:focus {
+  border-color: #8da5d4;
+}
+
+.field::placeholder {
+  color: #858da1;
+}
+
+.trick-list {
+  display: grid;
+  gap: 9px;
+}
+
+.trick-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, .025);
+}
+
+.trick-row label {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.trick-row input {
+  accent-color: #8da5d4;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.trick-row.done .trick-name {
+  text-decoration: line-through;
+  color: #9299aa;
+}
+
+.small-btn {
+  flex-shrink: 0;
+  color: #c0c9dc;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, .04);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.small-btn:hover {
+  background: rgba(255, 255, 255, .10);
+}
+
+.empty {
+  color: var(--muted);
+  font-size: .92rem;
+  padding: 15px 0;
+}
+
+/* LISTA TRICKÓW I PORADNIKI — DODANA SEKCJA */
+.tutorial-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.tutorial-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.tutorial-card p {
+  color: var(--muted);
+  font-size: .92rem;
+}
+
+.tutorial-card .btn {
+  margin-top: auto;
+  width: 100%;
+}
+
+.tutorial-level {
+  display: none;
+}
+
+.tutorial-group-title {
+  grid-column: 1 / -1;
+  margin: 20px 0 2px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid rgba(255, 79, 189, .28);
+  color: #f4c4e2;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  letter-spacing: .02em;
+}
+
+a, button, input, select, .card, .small-btn {
+  transition-property: color, background, border-color, box-shadow, transform, text-shadow;
+  transition-duration: .22s;
+}
+
+a:hover, button:hover, .small-btn:hover {
+  text-shadow: 0 0 9px rgba(255, 79, 189, .65);
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #ff78c9;
+  outline-offset: 4px;
+  box-shadow: 0 0 16px rgba(255, 79, 189, .35);
+}
+
+@media (max-width: 760px) {
+  .tutorial-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 500px) {
+  .tutorial-list { grid-template-columns: 1fr; }
+}
+
+/* GALERIA */
+
+.upload-area {
+  border: 1px dashed rgba(153, 170, 211, .35);
+  border-radius: 16px;
+  padding: 24px;
+  background: rgba(255, 255, 255, .02);
+  margin-bottom: 20px;
+}
+
+.upload-area p {
+  color: var(--muted);
+  font-size: .9rem;
+  margin: 7px 0 15px;
+}
+
+.upload-input {
+  display: block;
+  width: 100%;
+  color: var(--muted);
+  font-size: .85rem;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.video-card video {
+  width: 100%;
+  display: block;
+  border-radius: 11px;
+  background: #07080b;
+  margin-bottom: 12px;
+  max-height: 400px;
+}
+
+.video-card h3 {
+  overflow-wrap: anywhere;
+}
+
+.video-card .small-btn {
+  margin-top: 10px;
+}
+
+/* SPRZĘT */
+
+.price {
+  display: inline-block;
+  margin: 12px 0;
+  color: #d4def3;
+  font-weight: 850;
+  font-size: 1.2rem;
+}
+
+.tag {
+  display: inline-block;
+  font-size: .73rem;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: #c4cce0;
+  margin-bottom: 12px;
+}
+
+/* SŁOWNIK */
+
+.glossary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.glossary-item {
+  padding: 16px;
+  border-left: 2px solid #7084b0;
+  background: rgba(255, 255, 255, .025);
+  border-radius: 0 10px 10px 0;
+}
+
+.glossary-item strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.glossary-item p {
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+/* STOPKA */
+
+footer {
+  margin-top: 35px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 30px 18px;
+  color: var(--muted);
+  font-size: .85rem;
+}
+
+footer strong {
+  color: var(--text);
+  letter-spacing: 2px;
+}
+
+@media (max-width: 760px) {
+  .nav {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nav-links {
+    gap: 13px;
+  }
+
+  .nav-links a {
+    font-size: .82rem;
+  }
+
+  section {
+    padding: 55px 0;
+  }
+
+  .hero {
+    min-height: 65vh;
+  }
+
+  .hero h1 {
+    letter-spacing: -1.5px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 500px) {
+  main {
+    width: calc(100% - 28px);
+  }
+
+  .grid,
+  .video-grid,
+  .glossary {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    gap: 7px;
+  }
+
+  .stat strong {
+    font-size: 1.45rem;
+  }
+
+  .stat span {
+    font-size: .72rem;
+  }
+
+  .tracker-form {
+    flex-direction: column;
+  }
+
+  .tracker-form .btn {
+    width: 100%;
+  }
+
+  .hero p {
+    font-size: .95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="ambient" aria-hidden="true">
+  <canvas id="fx-canvas"></canvas>
+  <div class="smoke one"></div>
+  <div class="smoke two"></div>
+  <div class="smoke three"></div>
+</div>
+
+<header>
+  <nav class="nav">
+    <a class="logo" href="#home">EXOTIC <span>COMMUNITY</span></a>
+    <div class="nav-links">
+      <a href="#socials">Sociale</a>
+      <a href="#achievements">Osiągnięcia</a>
+      <a href="#tracker">Tricki</a>
+      <a href="#tutorials">Lista tricków</a>
+      <a href="#gallery">Galeria</a>
+      <a href="#gear">Sprzęt</a>
+      <a href="#glossary">Słownik</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero" id="home">
+    <div class="eyebrow">Balisong • Flipping • Community</div>
+    <h1>EXOTIC<br><span>COMMUNITY</span></h1>
+    <p>
+      Miejsce dla osób, które rozwijają swoje umiejętności,
+      uczą się nowych tricków i dzielą się zajawką na balisongi.
+    </p>
+    <div class="hero-buttons">
+      <a class="btn primary" href="#socials">Dołącz do społeczności</a>
+      <a class="btn secondary" href="#tracker">Sprawdź swoje postępy</a>
+    </div>
+  </section>
+
+  <section id="socials">
+    <div class="section-head">
+      <div class="eyebrow">Znajdź nas</div>
+      <h2>Nasze sociale</h2>
+      <p class="section-desc">
+        Obserwuj, oglądaj materiały i dołącz do społeczności.
+      </p>
+    </div>
+
+    <div class="grid">
+      <article class="card social-card">
+        <div class="card-icon">♪</div>
+        <h3>TikTok</h3>
+        <p>Krótkie filmy, kombinacje i flipping.</p>
+        <a class="btn secondary" href="https://www.tiktok.com/@siemanatan"
+           target="_blank" rel="noopener noreferrer">Otwórz TikTok ↗</a>
+      </article>
+
+      <article class="card social-card">
+        <div class="card-icon">▶</div>
+        <h3>YouTube</h3>
+        <p>Materiały i filmy z naszej zajawki.</p>
+        <a class="btn secondary" href="https://www.youtube.com/@prod.sens77"
+           target="_blank" rel="noopener noreferrer">Otwórz YouTube ↗</a>
+      </article>
+
+      <article class="card social-card">
+        <div class="card-icon">◉</div>
+        <h3>Twitch</h3>
+        <p>Sprawdź transmisje i aktywność kanału.</p>
+        <a class="btn secondary" href="https://www.twitch.tv/smokromance"
+           target="_blank" rel="noopener noreferrer">Otwórz Twitch ↗</a>
+      </article>
+
+      <article class="card social-card">
+        <div class="card-icon">⌘</div>
+        <h3>Discord</h3>
+        <p>Porozmawiaj z innymi i wymieniaj się doświadczeniem.</p>
+        <a class="btn primary" href="https://discord.gg/C8eJ4FRQj"
+           target="_blank" rel="noopener noreferrer">Dołącz na Discord ↗</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="achievements">
+    <div class="section-head">
+      <div class="eyebrow">Twój progres</div>
+      <h2>Osiągnięcia</h2>
+      <p class="section-desc">
+        Trenuj regularnie i obserwuj, ile tricków udało Ci się opanować.
+        Statystyki aktualizują się na podstawie Twojego trackera.
+      </p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="statTotal">0</strong>
+        <span>Tricków na liście</span>
+      </div>
+      <div class="stat">
+        <strong id="statDone">0</strong>
+        <span>Opanowanych tricków</span>
+      </div>
+      <div class="stat">
+        <strong id="statProgress">0%</strong>
+        <span>Ukończenia listy</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <div class="card-icon">Ⅰ</div>
+        <h3>Pierwszy krok</h3>
+        <p>Dodaj swój pierwszy trick do trackera.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">Ⅱ</div>
+        <h3>Systematyczność</h3>
+        <p>Odhaczaj kolejne tricki i kontroluj postępy.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">Ⅲ</div>
+        <h3>Własny styl</h3>
+        <p>Łącz opanowane tricki w dłuższe kombinacje.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="tracker">
+    <div class="section-head">
+      <div class="eyebrow">Trening</div>
+      <h2>Trick tracker</h2>
+      <p class="section-desc">
+        Dodawaj tricki i zaznaczaj te, które już umiesz.
+        Lista zapisuje się w pamięci tej przeglądarki.
+      </p>
+    </div>
+
+    <div class="card">
+      <form class="tracker-form" id="trickForm">
+        <input class="field" id="trickInput" maxlength="70"
+          placeholder="Np. Y2K, Chaplin, Zen rollover..." required>
+        <button class="btn primary" type="submit">+ Dodaj trick</button>
+      </form>
+
+      <div class="trick-list" id="trickList"></div>
+      <p class="section-desc" style="margin-top:16px">
+        Dane trackera są lokalne. Wyczyszczenie danych przeglądarki może je usunąć.
+      </p>
+    </div>
+  </section>
+
+  <section id="tutorials">
+    <div class="section-head">
+      <div class="eyebrow">Nauka krok po kroku</div>
+      <h2>Lista tricków — 30 ruchów</h2>
+      <p class="section-desc">
+        Lista zawiera 10 podstawowych, 15 średnio zaawansowanych i 5 zaawansowanych tricków. Wszystkie przyciski prowadzą wyłącznie do wyszukiwania poradników Squid Industries na YouTube.
+      </p>
+      <p class="section-desc" style="margin-top:10px">
+        <a href="https://www.squidindustries.co/pages/balisong-trick-learn-page"
+           target="_blank" rel="noopener noreferrer"><strong>Oficjalny katalog tricków Squid Industries ↗</strong></a>
+        &nbsp;·&nbsp;
+        <a href="https://www.squidindustries.co/blogs/education-squid-industries/first-time-balisong-owner"
+           target="_blank" rel="noopener noreferrer"><strong>Poradnik dla początkujących ↗</strong></a>
+      </p>
+    </div>
+
+    <div class="tutorial-list">
+      <h3 class="tutorial-group-title">Początkujący</h3>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>1. Basic Opening</h3>
+        <p>Podstawowe otwarcie — naucz się kontrolować uchwyty.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Basic+Opening+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>2. Basic Closing</h3>
+        <p>Podstawowe zamknięcie, wykonywane powoli i pod kontrolą.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Basic+Closing+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>3. Basic Vertical Opening</h3>
+        <p>Proste otwarcie w pionie.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Basic+Vertical+Opening+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>4. Basic Horizontal Opening</h3>
+        <p>Podstawowe otwarcie w poziomie.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Basic+Horizontal+Opening+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>5. Basic Twirl</h3>
+        <p>Podstawowy obrót, który buduje płynność ruchu.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Basic+Twirl+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>6. Full Twirl</h3>
+        <p>Pełniejsza wersja twirla.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Full+Twirl+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>7. Extended Twirl</h3>
+        <p>Rozszerzony twirl do ćwiczenia kontroli.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Extended+Twirl+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>8. Basic Fan</h3>
+        <p>Rozkręcenie uchwytów w wachlarz.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Basic+Fan+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>9. Reverse Fan</h3>
+        <p>Wachlarz wykonywany w przeciwnym kierunku.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Reverse+Fan+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 1 · Początkujący</span>
+        <h3>10. Latch Drop</h3>
+        <p>Podstawowy ruch z opuszczeniem uchwytu.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Latch+Drop+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <h3 class="tutorial-group-title">Średnio zaawansowany</h3>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>11. Behind the 8 Ball</h3>
+        <p>Popularny element do nauki przejść za dłonią.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Behind+the+8+Ball+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>12. Helix</h3>
+        <p>Sekwencja obrotów, wymagająca wyczucia rytmu.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Helix+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>13. Helix Aerial</h3>
+        <p>Trudniejsza odmiana helixa z aerialem.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Helix+Aerial+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>14. Whip Rollover</h3>
+        <p>Rollover z dynamicznym przejściem uchwytu.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Whip+Rollover+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>15. Fan Transfer</h3>
+        <p>Przejście z wachlarza do kolejnego ruchu.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Fan+Transfer+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>16. Backhand Fan</h3>
+        <p>Wachlarz wykonywany z ustawienia backhand.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Backhand+Fan+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>17. Choker Fan</h3>
+        <p>Wachlarz z charakterystycznym przejściem choker.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Choker+Fan+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>18. Twirl Aerial</h3>
+        <p>Połączenie twirla z aerialem.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Twirl+Aerial+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>19. Underhand Transfer</h3>
+        <p>Przejście prowadzone od dołu dłoni.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Underhand+Transfer+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>20. Flail Aerial</h3>
+        <p>Aerial z rozpędem, wymagający dobrej kontroli.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Flail+Aerial+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>21. Index Rollover</h3>
+        <p>Rollover wokół palca wskazującego.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Index+Rollover+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>22. Double Rollout</h3>
+        <p>Podwójne rozwinięcie ruchu.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Double+Rollout+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>23. Zipper</h3>
+        <p>Szybka sekwencja ruchów i przejść.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Zipper+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>24. Scissor Transfer</h3>
+        <p>Przejście typu scissor pomiędzy chwytami.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Scissor+Transfer+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 2 · Średni</span>
+        <h3>25. Backhand Catch</h3>
+        <p>Złapanie trenera w ustawieniu backhand.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Backhand+Catch+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <h3 class="tutorial-group-title">Zaawansowany</h3>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 3 · Zaawansowany</span>
+        <h3>26. Blender</h3>
+        <p>Zaawansowana sekwencja rolloverów i przejść.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Blender+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 3 · Zaawansowany</span>
+        <h3>27. Around the World</h3>
+        <p>Ruch prowadzony dookoła dłoni.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Around+the+World+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 3 · Zaawansowany</span>
+        <h3>28. Around the World Aerial</h3>
+        <p>Trudniejsza wersja z aerialem.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Around+the+World+Aerial+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 3 · Zaawansowany</span>
+        <h3>29. Double Index Roll</h3>
+        <p>Podwójny rollover wokół palca wskazującego.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Double+Index+Roll+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+      <article class="card tutorial-card">
+        <span class="tutorial-level">Poziom 3 · Zaawansowany</span>
+        <h3>30. Reverse Helix</h3>
+        <p>Helix wykonywany w odwrotnym kierunku.</p>
+        <a class="btn secondary" href="https://www.youtube.com/results?search_query=Squid+Industries+Reverse+Helix+balisong+tutorial" target="_blank" rel="noopener noreferrer">Szukaj u Squid Industries ↗</a>
+      </article>
+    </div>
+
+    <p class="section-desc" style="margin-top:18px">
+      Bezpieczeństwo: ćwicz na tępym trainerze, z dala od innych osób i delikatnych przedmiotów.
+      Najpierw technika i kontrola, dopiero potem szybkość.
+    </p>
+  </section>
+
+  <section id="gallery">
+    <div class="section-head">
+      <div class="eyebrow">Twoje klipy</div>
+      <h2>Galeria flippingu</h2>
+      <p class="section-desc">
+        Dodaj własne nagrania, aby odtwarzać je na tej stronie.
+      </p>
+    </div>
+
+    <div class="upload-area">
+      <h3>Dodaj swoje wideo</h3>
+      <p>
+        Wybierz filmy z urządzenia. Nagrania pozostają na tym urządzeniu
+        i nie są wysyłane na serwer.
+      </p>
+      <input class="upload-input" type="file" id="videoInput"
+        accept="video/*" multiple>
+      <p id="galleryStatus" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="video-grid" id="videoGrid"></div>
+  </section>
+
+  <section id="gear">
+    <div class="section-head">
+      <div class="eyebrow">Sprzęt</div>
+      <h2>Co wybrać na początek?</h2>
+      <p class="section-desc">
+        Przykładowe modele treningowe. Ceny są orientacyjne i mogą się zmieniać.
+        Przed zakupem sprawdź aktualną cenę i wersję produktu.
+      </p>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <span class="tag">Najepsza opcja na start</span>
+        <h3>Nabalis Impulse</h3>
+        <p>Najelpszy w stosunku ceny do jakości mega polecajka.</p>
+        <span class="price">około 150 zł</span>
+      </article>
+      
+      <article class="card">
+        <span class="tag">Troche droższa wersja na początek.</span>
+        <h3>Nabalis Vulp</h3>
+        <p>Model treningowy do nauki podstaw i rozwijania kontroli nad ruchem.</p>
+        <span class="price">250 zł</span>
+      </article>
+
+       <article class="card">
+        <span class="tag">Troche droższa wersja na początek.</span>
+        <h3>Nabalis Vulp Pro2</h3>
+        <p>Dobry jako 3/4 nóż jak opanuje sie combosy.</p>
+        <span class="price">550 zł</span>
+      </article>
+
+      <article class="card">
+        <span class="tag">Ważna wskazówka</span>
+        <h3>Wybierz trainer</h3>
+        <p>
+          Do ćwiczeń wybierz bezpieczny model treningowy z tępą krawędzią.
+          Sprawdź też lokalne przepisy i zasady używania sprzętu.
+        </p>
+      </article>
+
+         <article class="card">
+        <span class="tag">Mały tip</span>
+        <h3>Jeśli kupisz live blade</h3>
+        <p>
+          Możesz zakleić ostrze taśmą, najlepiej izolacyjną.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section id="glossary">
+    <div class="section-head">
+      <div class="eyebrow">Podstawy</div>
+      <h2>Słownik balisonga</h2>
+      <p class="section-desc">
+        Kilka terminów, które często pojawiają się w społeczności.
+      </p>
+    </div>
+
+    <div class="glossary">
+      <div class="glossary-item">
+        <strong>Trainer</strong>
+        <p>Model treningowy z tępą krawędzią, przeznaczony do ćwiczeń.</p>
+      </div>
+        <div class="glossary">
+      <div class="glossary-item">
+        <strong>Live blade</strong>
+        <p>Model z prawdziwym ostrym ostrzem.</p>
+      </div>
+      <div class="glossary-item">
+        <strong>Flip</strong>
+        <p>Ruch polegający na obracaniu i kontrolowaniu balisonga.</p>
+      </div>
+      <div class="glossary-item">
+        <strong>Combo</strong>
+        <p>Sekwencja kilku połączonych tricków.</p>
+      </div>
+      <div class="glossary-item">
+        <strong>Rollover</strong>
+        <p>Rodzaj ruchu, w którym sprzęt obraca się wokół palca.</p>
+      </div>
+      <div class="glossary-item">
+        <strong>Aerial</strong>
+        <p>Element, w którym sprzęt zostaje wypuszczony i ponownie złapany.</p>
+      </div>
+      <div class="glossary-item">
+        <strong>Flow</strong>
+        <p>Płynność i rytm łączenia ruchów w kombinacji.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>EXOTIC COMMUNITY</strong>
+  <p style="margin-top:8px">Balisong • Trening • Społeczność</p>
+  <p style="margin-top:4px">Strona społecznościowa — stworzona z zajawki.</p>
+</footer>
+
+<script>
+/* ANIMOWANE CZĄSTECZKI I WEJŚCIA SEKCJI */
+
+(() => {
+  const canvas = document.getElementById("fx-canvas");
+  const ctx = canvas && canvas.getContext("2d");
+  if (!canvas || !ctx) return;
+
+  let width = 0;
+  let height = 0;
+  let particles = [];
+  let frame = 0;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.min(100, Math.floor(width / 13));
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 1.8 + .45,
+      vx: (Math.random() - .5) * .42,
+      vy: -Math.random() * .6 - .12,
+      phase: Math.random() * Math.PI * 2,
+      hue: Math.random() > .72 ? 320 : 265
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach(p => {
+      if (!reducedMotion) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.phase += .025;
+        if (p.y < -8) { p.y = height + 8; p.x = Math.random() * width; }
+        if (p.x < -8) p.x = width + 8;
+        if (p.x > width + 8) p.x = -8;
+      }
+      const alpha = .22 + (Math.sin(p.phase) + 1) * .24;
+      ctx.beginPath();
+      ctx.fillStyle = `hsla(${p.hue}, 100%, 76%, ${alpha})`;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = p.hue === 320 ? "#ff4fbd" : "#985cff";
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.shadowBlur = 0;
+    if (!reducedMotion) frame = requestAnimationFrame(draw);
+  }
+
+  resize();
+  draw();
+  window.addEventListener("resize", resize, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) cancelAnimationFrame(frame);
+    else if (!reducedMotion) { cancelAnimationFrame(frame); frame = requestAnimationFrame(draw); }
+  });
+})();
+
+document.documentElement.classList.add("reveal-ready");
+if ("IntersectionObserver" in window) {
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: .12 });
+  document.querySelectorAll(".card, .stat, .glossary-item, .tutorial-group-title").forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 4) * 70}ms`;
+    revealObserver.observe(el);
+  });
+} else {
+  document.querySelectorAll(".card, .stat, .glossary-item, .tutorial-group-title").forEach(el => el.classList.add("is-visible"));
+}
+
+/* TRACKER TRICKÓW */
+
+const STORAGE_KEY = "exoticCommunityTricksV1";
+const trickForm = document.getElementById("trickForm");
+const trickInput = document.getElementById("trickInput");
+const trickList = document.getElementById("trickList");
+
+let tricks = [];
+
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  if (Array.isArray(saved)) {
+    tricks = saved.filter(item =>
+      item &&
+      typeof item.id === "string" &&
+      typeof item.name === "string" &&
+      typeof item.done === "boolean"
+    );
+  }
+} catch (error) {
+  tricks = [];
+}
+
+function saveTricks() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tricks));
+  } catch (error) {
+    alert("Nie udało się zapisać listy. Sprawdź ustawienia przeglądarki.");
+  }
+}
+
+function updateStats() {
+  const total = tricks.length;
+  const done = tricks.filter(trick => trick.done).length;
+  const progress = total ? Math.round(done / total * 100) : 0;
+
+  document.getElementById("statTotal").textContent = total;
+  document.getElementById("statDone").textContent = done;
+  document.getElementById("statProgress").textContent = progress + "%";
+}
+
+function renderTricks() {
+  trickList.replaceChildren();
+
+  if (tricks.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "Nie masz jeszcze żadnych tricków. Dodaj pierwszy powyżej.";
+    trickList.appendChild(empty);
+  }
+
+  tricks.forEach(trick => {
+    const row = document.createElement("div");
+    row.className = "trick-row" + (trick.done ? " done" : "");
+
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = trick.done;
+    checkbox.setAttribute("aria-label", "Oznacz trick jako opanowany");
+
+    const name = document.createElement("span");
+    name.className = "trick-name";
+    name.textContent = trick.name;
+
+    checkbox.addEventListener("change", () => {
+      trick.done = checkbox.checked;
+      saveTricks();
+      renderTricks();
+    });
+
+    label.append(checkbox, name);
+
+    const remove = document.createElement("button");
+    remove.className = "small-btn";
+    remove.type = "button";
+    remove.textContent = "Usuń";
+    remove.setAttribute("aria-label", "Usuń trick " + trick.name);
+
+    remove.addEventListener("click", () => {
+      tricks = tricks.filter(item => item.id !== trick.id);
+      saveTricks();
+      renderTricks();
+    });
+
+    row.append(label, remove);
+    trickList.appendChild(row);
+  });
+
+  updateStats();
+}
+
+trickForm.addEventListener("submit", event => {
+  event.preventDefault();
+
+  const name = trickInput.value.trim();
+  if (!name) return;
+
+  tricks.push({
+    id: crypto.randomUUID
+      ? crypto.randomUUID()
+      : String(Date.now()) + Math.random().toString(16).slice(2),
+    name,
+    done: false
+  });
+
+  saveTricks();
+  renderTricks();
+  trickInput.value = "";
+  trickInput.focus();
+});
+
+renderTricks();
+
+
+/* LOKALNA GALERIA WIDEO — INDEXEDDB */
+
+const DB_NAME = "ExoticCommunityGallery";
+const DB_VERSION = 1;
+const STORE_NAME = "videos";
+
+const videoInput = document.getElementById("videoInput");
+const videoGrid = document.getElementById("videoGrid");
+const galleryStatus = document.getElementById("galleryStatus");
+
+let db = null;
+let objectUrls = [];
+
+function openGalleryDB() {
+  return new Promise((resolve, reject) => {
+    if (!("indexedDB" in window)) {
+      reject(new Error("Ta przeglądarka nie obsługuje IndexedDB."));
+      return;
+    }
+
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = () => {
+      const database = request.result;
+      if (!database.objectStoreNames.contains(STORE_NAME)) {
+        database.createObjectStore(STORE_NAME, {
+          keyPath: "id",
+          autoIncrement: true
+        });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function galleryTransaction(mode, action) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, mode);
+    const store = transaction.objectStore(STORE_NAME);
+    let request;
+
+    try {
+      request = action(store);
+    } catch (error) {
+      reject(error);
+      return;
+    }
+
+    transaction.oncomplete = () => resolve(request ? request.result : undefined);
+    transaction.onerror = () => reject(transaction.error);
+    transaction.onabort = () => reject(transaction.error || new Error("Operacja została przerwana."));
+  });
+}
+
+async function getAllVideos() {
+  return galleryTransaction("readonly", store => store.getAll());
+}
+
+async function renderGallery() {
+  if (!db) return;
+
+  objectUrls.forEach(url => URL.revokeObjectURL(url));
+  objectUrls = [];
+  videoGrid.replaceChildren();
+
+  let videos;
+
+  try {
+    videos = await getAllVideos();
+  } catch (error) {
+    galleryStatus.textContent = "Nie udało się odczytać galerii.";
+    return;
+  }
+
+  if (!videos.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "Galeria jest pusta. Dodaj swoje pierwsze nagranie.";
+    videoGrid.appendChild(empty);
+    return;
+  }
+
+  videos.forEach(item => {
+    const card = document.createElement("article");
+    card.className = "card video-card";
+
+    const video = document.createElement("video");
+    const url = URL.createObjectURL(item.blob);
+    objectUrls.push(url);
+
+    video.src = url;
+    video.controls = true;
+    video.preload = "metadata";
+    video.playsInline = true;
+
+    const title = document.createElement("h3");
+    title.textContent = item.name;
+
+    const remove = document.createElement("button");
+    remove.className = "small-btn";
+    remove.type = "button";
+    remove.textContent = "Usuń nagranie";
+
+    remove.addEventListener("click", async () => {
+      const confirmed = confirm("Usunąć to nagranie z lokalnej galerii?");
+      if (!confirmed) return;
+
+      try {
+        await galleryTransaction("readwrite", store => store.delete(item.id));
+        galleryStatus.textContent = "Nagranie zostało usunięte.";
+        await renderGallery();
+      } catch (error) {
+        galleryStatus.textContent = "Nie udało się usunąć nagrania.";
+      }
+    });
+
+    card.append(video, title, remove);
+    videoGrid.appendChild(card);
+  });
+}
+
+videoInput.addEventListener("change", async () => {
+  if (!db) {
+    galleryStatus.textContent = "Galeria nie jest dostępna w tej przeglądarce.";
+    return;
+  }
+
+  const files = Array.from(videoInput.files || []);
+  if (!files.length) return;
+
+  const MAX_FILE_SIZE = 200 * 1024 * 1024;
+  const validFiles = files.filter(file => {
+    if (!file.type.startsWith("video/")) return false;
+
+    if (file.size > MAX_FILE_SIZE) {
+      galleryStatus.textContent =
+        "Plik „" + file.name + "” przekracza limit 200 MB i został pominięty.";
+      return false;
+    }
+
+    return true;
+  });
+
+  try {
+    for (const file of validFiles) {
+      await galleryTransaction("readwrite", store =>
+        store.add({
+          name: file.name,
+          type: file.type,
+          blob: file,
+          addedAt: Date.now()
+        })
+      );
+    }
+
+    galleryStatus.textContent = validFiles.length
+      ? "Dodano " + validFiles.length + " nagranie(a). Pliki są zapisane lokalnie."
+      : "Nie dodano żadnych plików. Wybierz pliki wideo do 200 MB każdy.";
+
+    await renderGallery();
+  } catch (error) {
+    galleryStatus.textContent =
+      "Nie udało się zapisać nagrań. Możliwe, że brakuje miejsca na urządzeniu.";
+  } finally {
+    videoInput.value = "";
+  }
+});
+
+(async function initGallery() {
+  try {
+    db = await openGalleryDB();
+    await renderGallery();
+  } catch (error) {
+    galleryStatus.textContent =
+      "Lokalna galeria jest niedostępna. Otwórz stronę w aktualnej przeglądarce.";
+  }
+})();
+
+window.addEventListener("pagehide", () => {
+  objectUrls.forEach(url => URL.revokeObjectURL(url));
+});
+</script>
+
+</body>
+</html>
